@@ -2,6 +2,8 @@
 
 ## 1. System Design
 
+    Three Core Actions: A user should be able enter basic pet and owner information, add and edit tasks (at minimum, their duration and priority), and track pet care tasks.
+
 **a. Initial design**
 
 - Briefly describe your initial UML design.
