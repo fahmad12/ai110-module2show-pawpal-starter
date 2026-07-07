@@ -17,15 +17,22 @@ classDiagram
         +fits_in(remaining_minutes) bool
     }
 
+    class ScheduledTask {
+        +Task task
+        +time start_time
+        +end_time() time
+    }
+
     class Scheduler {
         +list~Task~ tasks
         +int available_minutes
+        +from_pet(pet, available_minutes) Scheduler$
         +build_plan() DailyPlan
         +explain() str
     }
 
     class DailyPlan {
-        +list entries
+        +list~ScheduledTask~ entries
         +list~Task~ skipped
         +to_text() str
         +total_time() int
@@ -34,4 +41,5 @@ classDiagram
     Pet "1" --> "*" Task : has
     Scheduler --> Task : schedules
     Scheduler ..> DailyPlan : produces
-    DailyPlan "1" --> "*" Task : contains
+    DailyPlan "1" --> "*" ScheduledTask : contains
+    ScheduledTask "1" --> "1" Task : wraps

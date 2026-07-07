@@ -9,11 +9,14 @@
 - Briefly describe your initial UML design.
 - What classes did you include, and what responsibilities did you assign to each?
 
+    In my initial UML design, I included four main classes: Task (responsibilities include priority and duration), Pet (responsibilities include name and species), Scheduler (responsibilities include reading tasks), and finally DailyPlan (responsibilities include total time and skipped tasks).
+
 **b. Design changes**
 
 - Did your design change during implementation?
 - If yes, describe at least one change and why you made it.
 
+    Yes, my design changed during implementation. One change I made was that I had added, and then removed, the ScheduledTask class, which I then removed because it was overcomplicating the code.
 ---
 
 ## 2. Scheduling Logic and Tradeoffs
