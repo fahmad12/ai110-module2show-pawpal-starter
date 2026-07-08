@@ -60,7 +60,9 @@ Daily plan:
 
 ```bash
 # Run the full test suite:
-pytest
+python -m pytest
+
+  #The tests check if a task is completed, if adding a task increases the task count, if the task list is returned in chronological order, if a daily/weekly task is automatically added when it is completed, and if two tasks scheduled at the same time are detected. 
 
 # Run with coverage:
 pytest --cov
@@ -68,8 +70,17 @@ pytest --cov
 
 Sample test output:
 
+platform darwin -- Python 3.11.4, pytest-7.4.0, pluggy-1.0.0
+rootdir: /Users/fahmad/Desktop/ai110-module2show-pawpal-starter
+plugins: anyio-4.14.1
+collected 5 items                                                                                          
+
+tests/test_pawpal.py .....                                                                           [100%]
+
+============================================ 5 passed in 0.01s =============================================
+
 ```
-# Paste your pytest output here
+# Confidence Level: 4/5 ⭐⭐⭐⭐
 ```
 
 ## 📐 Smarter Scheduling
