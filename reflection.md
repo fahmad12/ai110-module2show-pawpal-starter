@@ -29,7 +29,12 @@
 **b. Tradeoffs**
 
 - Describe one tradeoff your scheduler makes.
+
+    One tradeoff was that I decided have the knapsack keep track of all the tasks as it went along, as composed to compiling the list at the very end. While it was slower, it was done to make the code easier to read.
+
 - Why is that tradeoff reasonable for this scenario?
+
+    This tradeoff is reasonable for this scenario because it makes it easier for a person to read, as opposed to running a little bit faster.
 
 ---
 
