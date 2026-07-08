@@ -83,9 +83,18 @@ else:
     with col4:
         priority = st.selectbox("Priority", ["low", "medium", "high"], index=2)
 
+    col5, col6 = st.columns(2)
+    with col5:
+        start_time = st.text_input("Start time (HH:MM, optional)", value="08:00")
+    with col6:
+        frequency = st.selectbox("Repeats", ["once", "daily", "weekly"])
+
     if st.button("Add task"):
         pet = next(p for p in owner.pets if p.name == which_pet)
-        pet.add_task(Task(task_title, int(duration), priority))
+        pet.add_task(
+            Task(task_title, int(duration), priority,
+                 time=start_time.strip(), frequency=frequency)
+        )
         st.success(f"Added '{task_title}' to {which_pet}.")
 
     # Show each pet's current tasks.
@@ -95,11 +104,72 @@ else:
             st.write(f"**{p.name}**")
             st.table(
                 [
-                    {"title": t.title, "duration_minutes": t.duration_minutes,
-                     "priority": t.priority}
+                    {"title": t.title, "time": t.time or "—",
+                     "duration (min)": t.duration_minutes, "priority": t.priority,
+                     "repeats": t.frequency,
+                     "done": "✓" if t.completed else ""}
                     for t in tasks
                 ]
             )
+
+st.divider()
+
+# --- Today's timeline: sorting + conflict detection ------------------------
+st.subheader("Today's Timeline")
+if not owner.all_tasks():
+    st.info("Add a pet and some tasks to see the timeline.")
+else:
+    timeline = Scheduler.from_owner(owner, 0)
+
+    # Warn the owner about any double-booked times first — this is the most
+    # actionable thing they can fix, so it goes at the top and stays visible.
+    conflicts = timeline.detect_conflicts()
+    if conflicts:
+        for warning in conflicts:
+            st.warning(warning)
+        st.caption("Two tasks share a start time — consider moving one.")
+    else:
+        st.success("No scheduling conflicts. 🎉")
+
+    # Show every task in chronological order.
+    ordered = timeline.sort_by_time()
+    st.table(
+        [
+            {"time": t.time or "—", "task": t.title,
+             "duration (min)": t.duration_minutes, "priority": t.priority}
+            for t in ordered
+        ]
+    )
+
+st.divider()
+
+# --- Filter tasks ----------------------------------------------------------
+st.subheader("Find Tasks")
+if not owner.all_tasks():
+    st.info("Add tasks to filter them.")
+else:
+    finder = Scheduler.from_owner(owner, 0)
+    col_a, col_b = st.columns(2)
+    with col_a:
+        status = st.selectbox("Status", ["all", "pending", "completed"])
+    with col_b:
+        name_query = st.text_input("Title contains", value="")
+
+    completed_filter = {"all": None, "pending": False, "completed": True}[status]
+    matches = finder.filter_tasks(
+        completed=completed_filter,
+        pet_name=name_query.strip() or None,
+    )
+    if matches:
+        st.table(
+            [
+                {"task": t.title, "time": t.time or "—",
+                 "priority": t.priority, "done": "✓" if t.completed else ""}
+                for t in matches
+            ]
+        )
+    else:
+        st.info("No tasks match those filters.")
 
 st.divider()
 
@@ -114,4 +184,24 @@ if st.button("Generate schedule"):
         st.warning("No tasks to schedule yet. Add a pet and some tasks first.")
     else:
         plan = Scheduler.from_owner(owner, int(available_minutes)).build_plan()
-        st.text(plan.to_text())
+
+        st.success(
+            f"Planned {len(plan.entries)} task(s) using "
+            f"{plan.total_time()} of {int(available_minutes)} min."
+        )
+        if plan.entries:
+            st.table(
+                [
+                    {"task": t.title, "duration (min)": t.duration_minutes,
+                     "priority": t.priority}
+                    for t in plan.entries
+                ]
+            )
+        if plan.skipped:
+            st.warning(
+                "Not enough time for: "
+                + ", ".join(t.title for t in plan.skipped)
+            )
+        # Keep the timestamped text version too, for the "why/when" detail.
+        with st.expander("See timed plan"):
+            st.text(plan.to_text())

@@ -1,5 +1,12 @@
 classDiagram
-    %% PawPal+ — pet care planning app (Module 2 draft UML)
+    %% PawPal+ — pet care planning app (final UML)
+
+    class Owner {
+        +str name
+        +list~Pet~ pets
+        +add_pet(pet) void
+        +all_tasks() list~Task~
+    }
 
     class Pet {
         +str name
@@ -7,39 +14,46 @@ classDiagram
         +list~Task~ tasks
         +add_task(task) void
         +list_tasks() list~Task~
+        +mark_task_complete(task) Task
     }
 
     class Task {
         +str title
         +int duration_minutes
         +str priority
+        +str time
+        +bool completed
+        +str frequency
+        +date due_date
         +priority_score() int
         +fits_in(remaining_minutes) bool
-    }
-
-    class ScheduledTask {
-        +Task task
-        +time start_time
-        +end_time() time
+        +mark_complete() void
+        +next_occurrence() Task
     }
 
     class Scheduler {
         +list~Task~ tasks
         +int available_minutes
         +from_pet(pet, available_minutes) Scheduler$
+        +from_owner(owner, available_minutes) Scheduler$
         +build_plan() DailyPlan
-        +explain() str
+        +sort_by_time() list~Task~
+        +filter_tasks(completed, pet_name) list~Task~
+        +detect_conflicts() list~str~
     }
 
     class DailyPlan {
-        +list~ScheduledTask~ entries
+        +list~Task~ entries
         +list~Task~ skipped
-        +to_text() str
+        +int available_minutes
         +total_time() int
+        +unused_time() int
+        +to_text() str
     }
 
+    Owner "1" --> "*" Pet : owns
     Pet "1" --> "*" Task : has
-    Scheduler --> Task : schedules
+    Scheduler ..> Owner : reads tasks from
     Scheduler ..> DailyPlan : produces
-    DailyPlan "1" --> "*" ScheduledTask : contains
-    ScheduledTask "1" --> "1" Task : wraps
+    DailyPlan "1" --> "*" Task : contains
+    Task ..> Task : next_occurrence

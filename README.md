@@ -98,10 +98,50 @@ tests/test_pawpal.py .....                                                      
 
 Describe your app in numbered steps so a reader can follow along without watching a video:
 
-1. <!-- Describe this step -->
-2. <!-- Describe this step -->
-3. <!-- Describe this step -->
-4. <!-- Describe this step -->
-5. <!-- Add more steps as needed -->
+1. Write the owner's name in the ownder section and the pet's name and species in the pet section.
+2. In the "Add a Task" section, add different tasks and their duration, priority, start time, and how often they repeat.
+3. If needed, view and filer taks using the status filter
+4. Create a schedule that will order tasks based on priority.
+5. When a recurring task is marked completed, it will be auto-created for the following day's schedule.
+
+#Sample:
+Schedule for A Today: 
+================================
+Daily plan:
+  08:00 — Pet A - Feeding (10 min) [priority: high]
+  08:10 — Pet A - Walk in Morning (30 min) [priority: high]
+  08:40 — Pet A - Evening Walk (30 min) [priority: medium]
+  09:10 — Pet B - Play time (20 min) [priority: low]
+Free time: 30 min
+
+Schedule conflicts:
+================================
+  ⚠ Conflict at 08:00: Pet A - Walk in Morning, Pet B - Play time
+
+All tasks sorted by time:
+================================
+  07:30 — Pet A - Feeding
+  08:00 — Pet A - Walk in Morning
+  08:00 — Pet B - Play time
+  12:15 — Pet B - Litter change
+  18:30 — Pet A - Evening Walk
+
+Still to do (not completed):
+================================
+  08:00 — Pet A - Walk in Morning
+  18:30 — Pet A - Evening Walk
+  07:30 — Pet A - Feeding
+  08:00 — Pet B - Play time
+
+Tasks for Pet A:
+================================
+  08:00 — Pet A - Walk in Morning
+  18:30 — Pet A - Evening Walk
+  07:30 — Pet A - Feeding
+
+Completing the daily 'Feeding' task:
+================================
+  Completed: Pet A - Feeding (completed=True)
+  Auto-created next occurrence due 2026-07-08 (daily)
 
 **Screenshot or video** *(optional)*: <!-- Insert a screenshot or link to a demo video here -->
